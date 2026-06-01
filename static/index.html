@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinGraphRAG | Portfolio Intelligence Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #070913;
+            --card-bg: rgba(15, 22, 42, 0.45);
+            --border-color: rgba(255, 255, 255, 0.05);
+            --primary-accent: #6366f1; 
+            --secondary-accent: #a855f7; 
+            --cyan-accent: #06b6d4; 
+            --text-color: #f8fafc;
+            --text-muted: #64748b;
+            --success-color: #10b981;
+            --danger-color: #f43f5e;
+            --portfolio-color: #a855f7;
+            --holding-color: #ec4899;
+            --company-color: #6366f1;
+            --sector-color: #06b6d4;
+            --filing-color: #eab308;
+            --event-color: #f97316;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.07) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff;
+            font-weight: 700;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(7, 9, 19, 0.7);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+        }
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-text p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .status-indicators {
+            display: flex;
+            gap: 1.25rem;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .status-item:hover {
+            color: #ffffff;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.active { background-color: var(--success-color); box-shadow: 0 0 8px var(--success-color); }
+        .status-dot.warn { background-color: var(--cyan-accent); box-shadow: 0 0 8px var(--cyan-accent); }
+        .status-dot.offline { background-color: var(--danger-color); box-shadow: 0 0 8px var(--danger-color); }
+        .dashboard-container {
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2.5rem 3rem;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 2.5rem;
+            flex: 1;
+        }
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(24px);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.12);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.03);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ffffff;
+            letter-spacing: -0.25px;
+        }
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .search-area {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        input[type="text"].search-box {
+            width: 100%;
+            background: rgba(10, 15, 30, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.1rem 7.5rem 1.1rem 1.25rem;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input[type="text"].search-box:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.2);
+            background: rgba(10, 15, 30, 0.75);
+        }
+        .search-button-wrapper {
+            position: absolute;
+            right: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        button {
+            cursor: pointer;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.88rem;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: #ffffff;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--text-muted);
+            color: #ffffff;
+        }
+        .settings-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-accent);
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease;
+            width: fit-content;
+            margin: 0 auto;
+        }
+        .settings-toggle:hover {
+            color: var(--secondary-accent);
+        }
+        .settings-toggle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .settings-toggle.expanded svg {
+            transform: rotate(180deg);
+        }
+        .collapsible-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .collapsible-panel.show {
+            max-height: 600px; 
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .presets-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .preset-badge {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .preset-badge:hover, .preset-badge.active {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: var(--primary-accent);
+            color: #ffffff;
+        }
+        .portfolio-builder {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+        }
+        .holding-input-card {
+            display: flex;
+            flex-direction: column;
+            background: rgba(10, 15, 30, 0.3);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .holding-input-card span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--cyan-accent);
+        }
+        .holding-input-card input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.1rem 0;
+            outline: none;
+        }
+        .allocation-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+        @media (max-width: 600px) {
+            .allocation-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        .alloc-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .alloc-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .alloc-bar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .alloc-bar-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .alloc-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .alloc-bar-track {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .alloc-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .report-panel {
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            line-height: 1.7;
+            padding: 0.5rem 0;
+        }
+        .report-panel h1, .report-panel h2, .report-panel h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            font-weight: 600;
+            border: none;
+            padding: 0;
+        }
+        .report-panel h1 { font-size: 1.35rem; }
+        .report-panel h2 { font-size: 1.15rem; color: var(--cyan-accent); }
+        .report-panel h3 { font-size: 1.05rem; color: var(--secondary-accent); }
+        .report-panel p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+            font-weight: 400;
+        }
+        .report-panel ul, .report-panel ol {
+            margin-left: 1.25rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+        .report-panel li {
+            margin-bottom: 0.35rem;
+        }
+        .report-panel strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .logs-toggle-wrapper {
+            margin-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.75rem;
+        }
+        .logs-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: fit-content;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .logs-toggle:hover {
+            color: var(--primary-accent);
+        }
+        .collapsible-logs {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-top: 0.5rem;
+        }
+        .collapsible-logs.show {
+            max-height: 120px;
+        }
+        .logs-panel {
+            background: rgba(5, 7, 14, 0.85);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            height: 120px;
+            overflow-y: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.72rem;
+            color: #38bdf8;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .log-entry {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .log-time {
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .visualizer-card {
+            background: rgba(10, 13, 24, 0.3);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            gap: 1rem;
+            position: relative;
+        }
+        #network-visualization {
+            width: 100%;
+            height: 520px;
+            border-radius: 12px;
+            background: #05060c;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            box-shadow: inset 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.72rem;
+            justify-content: center;
+            padding: 0.5rem 0 0 0;
+            border-top: 1px solid var(--border-color);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .legend-color {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            display: none;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">F</div>
+            <div class="logo-text">
+                <h1>FinGraphRAG</h1>
+                <p>US Equities Agent Console</p>
+            </div>
+        </div>
+        <div class="status-indicators">
+            <div class="status-item">
+                <span class="status-dot active" id="db-status"></span>
+                <span>Neo4j</span>
+            </div>
+            <div class="status-item">
+                <span class="status-dot warn" id="vector-status"></span>
+                <span>Qdrant</span>
+            </div>
+            <div class="status-item">
+                <span class="status-dot active" id="llm-status"></span>
+                <span>OpenAI</span>
+            </div>
+        </div>
+    </header>
+    <main class="dashboard-container">
+        <section class="card">
+            <div class="search-area">
+                <div class="search-wrapper">
+                    <input type="text" id="query-input" class="search-box" placeholder="Ask a strategic portfolio risk or competitiveness question..." value="What are the main semiconductor packaging and export risks in my portfolio?">
+                    <div class="search-button-wrapper">
+                        <button class="btn-primary" onclick="submitAgentQuery()" id="run-btn">
+                            <div class="loading-spinner" id="spinner"></div>
+                            <span id="btn-text">Analyze</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-toggle" id="settings-trigger" onclick="toggleAdvancedSettings()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                <span>Advanced Portfolio Settings</span>
+            </div>
+            <div class="collapsible-panel" id="advanced-settings-panel">
+                <div class="input-group">
+                    <label>Portfolio Presets</label>
+                    <div class="presets-row">
+                        <span class="preset-badge active" id="preset-tech" onclick="applyPreset('tech')">Tech Giants (AAPL/MSFT/NVDA/AMZN)</span>
+                        <span class="preset-badge" id="preset-ai" onclick="applyPreset('ai')">AI Compute (NVDA/MSFT/GOOG)</span>
+                        <span class="preset-badge" id="preset-growth" onclick="applyPreset('growth')">Innovation Core (TSLA/NVDA/AAPL)</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Adjust Active Weights (Target: 1.0)</label>
+                    <div class="portfolio-builder" id="weight-editor">
+                    </div>
+                </div>
+                <div class="allocation-section">
+                    <div class="alloc-card">
+                        <div class="alloc-title">
+                            <span>Holdings Weight</span>
+                            <span id="weight-total-badge">100%</span>
+                        </div>
+                        <div class="alloc-bar-container" id="holdings-bar-list">
+                        </div>
+                    </div>
+                    <div class="alloc-card">
+                        <div class="alloc-title">
+                            <span>Sector Exposure</span>
+                        </div>
+                        <div class="alloc-bar-container" id="sector-bar-list">
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                    <label>Add Custom Data</label>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <button class="btn-outline" onclick="document.getElementById('add-sec-form').style.display='flex'">Add SEC Filing</button>
+                        <button class="btn-outline" onclick="document.getElementById('add-event-form').style.display='flex'">Add News Event</button>
+                    </div>
+                    <div id="add-sec-form" style="display: none; flex-direction: column; gap: 0.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+                        <input type="text" id="sec-ticker" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="Ticker (e.g. AAPL)">
+                        <input type="text" id="sec-form-type" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="Form Type (e.g. 10-K)">
+                        <input type="text" id="sec-accession" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="Accession No">
+                        <input type="date" id="sec-date" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;">
+                        <input type="text" id="sec-url" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="URL">
+                        <textarea id="sec-text" class="search-box" style="padding: 0.5rem; font-size: 0.8rem; min-height: 60px;" placeholder="Document Text..."></textarea>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn-primary" onclick="submitSecFiling()" style="flex: 1; padding: 0.4rem;">Submit</button>
+                            <button class="btn-outline" onclick="document.getElementById('add-sec-form').style.display='none'" style="flex: 1; padding: 0.4rem;">Cancel</button>
+                        </div>
+                    </div>
+                    <div id="add-event-form" style="display: none; flex-direction: column; gap: 0.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+                        <input type="text" id="ev-id" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="Event ID (e.g. EV_009)">
+                        <input type="text" id="ev-title" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="Headline Title">
+                        <input type="text" id="ev-source" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="Source (e.g. Reuters)">
+                        <input type="date" id="ev-date" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;">
+                        <input type="text" id="ev-url" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="URL">
+                        <input type="text" id="ev-tickers" class="search-box" style="padding: 0.5rem; font-size: 0.8rem;" placeholder="Tickers (comma separated)">
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn-primary" onclick="submitEvent()" style="flex: 1; padding: 0.4rem;">Submit</button>
+                            <button class="btn-outline" onclick="document.getElementById('add-event-form').style.display='none'" style="flex: 1; padding: 0.4rem;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="btn-outline" id="reset-db-btn" onclick="resetDatabase()">
+                        Reset Knowledge Store
+                    </button>
+                </div>
+            </div>
+            <div class="report-panel" id="insight-output">
+                <p style="color: var(--text-muted); font-style: italic; text-align: center; padding: 4rem 0;">
+                    Submit a question to execute the stateful LangGraph agent and generate strategic risk insights.
+                </p>
+            </div>
+            <div class="logs-toggle-wrapper">
+                <div class="logs-toggle" id="logs-trigger" onclick="toggleLogs()">
+                    <span>Show Execution Logs</span>
+                </div>
+                <div class="collapsible-logs" id="logs-panel-collapsible">
+                    <div class="logs-panel" id="logs-output">
+                        <div class="log-entry"><span class="log-time">[System]</span> Initialized US Equities GraphRAG Engine. Awaiting commands...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="visualizer-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🕸️ Relational Knowledge Graph</span>
+                </div>
+                <div class="card-subtitle" id="graph-meta">Nodes: 0 | Edges: 0</div>
+            </div>
+            <div id="network-visualization"></div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--portfolio-color);"></div>
+                    <span>Portfolio</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--holding-color);"></div>
+                    <span>Holding</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--company-color);"></div>
+                    <span>Company</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--sector-color);"></div>
+                    <span>Sector</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--filing-color);"></div>
+                    <span>Filing</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--event-color);"></div>
+                    <span>News Event</span>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Preset configurations
+        const PRESETS = {
+            tech: [
+                { ticker: 'AAPL', weight: 0.3 },
+                { ticker: 'MSFT', weight: 0.3 },
+                { ticker: 'NVDA', weight: 0.2 },
+                { ticker: 'AMZN', weight: 0.2 }
+            ],
+            ai: [
+                { ticker: 'NVDA', weight: 0.5 },
+                { ticker: 'MSFT', weight: 0.3 },
+                { ticker: 'GOOG', weight: 0.2 }
+            ],
+            growth: [
+                { ticker: 'TSLA', weight: 0.4 },
+                { ticker: 'NVDA', weight: 0.3 },
+                { ticker: 'AAPL', weight: 0.3 }
+            ]
+        };
+        const STATIC_SECTORS = {
+            AAPL: "Information Technology",
+            MSFT: "Information Technology",
+            NVDA: "Information Technology",
+            TSLA: "Consumer Discretionary",
+            AMZN: "Consumer Discretionary",
+            GOOG: "Communication Services",
+            META: "Communication Services",
+            NFLX: "Communication Services",
+        };
+        let activeHoldings = [...PRESETS.tech];
+        let visNetworkInstance = null;
+        // On document load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderWeightInputs();
+            updateAllocationCharts();
+            fetchGraphData();
+            checkSystemStatus();
+        });
+        function checkSystemStatus() {
+            fetch('/api/graph')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('db-status').className = 'status-dot active';
+                    document.getElementById('vector-status').className = 'status-dot active';
+                })
+                .catch(() => {
+                    document.getElementById('db-status').className = 'status-dot warn';
+                    document.getElementById('vector-status').className = 'status-dot warn';
+                });
+        }
+        function toggleAdvancedSettings() {
+            const panel = document.getElementById('advanced-settings-panel');
+            const trigger = document.getElementById('settings-trigger');
+            if (panel.classList.contains('show')) {
+                panel.classList.remove('show');
+                trigger.classList.remove('expanded');
+            } else {
+                panel.classList.add('show');
+                trigger.classList.add('expanded');
+            }
+        }
+        function toggleLogs() {
+            const panel = document.getElementById('logs-panel-collapsible');
+            const trigger = document.getElementById('logs-trigger');
+            if (panel.classList.contains('show')) {
+                panel.classList.remove('show');
+                trigger.innerHTML = '<span>Show Execution Logs</span>';
+            } else {
+                panel.classList.add('show');
+                trigger.innerHTML = '<span>▼ Hide Execution Logs</span>';
+            }
+        }
+        function applyPreset(name) {
+            document.querySelectorAll('.preset-badge').forEach(b => b.classList.remove('active'));
+            document.getElementById(`preset-${name}`).classList.add('active');
+            activeHoldings = [...PRESETS[name]];
+            renderWeightInputs();
+            updateAllocationCharts();
+        }
+        function renderWeightInputs() {
+            const container = document.getElementById('weight-editor');
+            container.innerHTML = '';
+            activeHoldings.forEach((h, idx) => {
+                const card = document.createElement('div');
+                card.className = 'holding-input-card';
+                card.innerHTML = `
+                    <span>${h.ticker}</span>
+                    <input type="number" step="0.05" min="0" max="1" value="${h.weight}" onchange="updateWeight(${idx}, this.value)" />
+                `;
+                container.appendChild(card);
+            });
+        }
+        function updateWeight(idx, val) {
+            const parsed = parseFloat(val) || 0;
+            activeHoldings[idx].weight = parsed;
+            updateAllocationCharts();
+        }
+        function updateAllocationCharts() {
+            const holdingsContainer = document.getElementById('holdings-bar-list');
+            holdingsContainer.innerHTML = '';
+            let totalWeight = 0;
+            const colors = ['#6366f1', '#a855f7', '#06b6d4', '#ec4899', '#f97316', '#eab308'];
+            activeHoldings.forEach((h, idx) => {
+                totalWeight += h.weight;
+                const row = document.createElement('div');
+                row.className = 'alloc-bar-row';
+                const percent = Math.round(h.weight * 100);
+                const color = colors[idx % colors.length];
+                row.innerHTML = `
+                    <div class="alloc-bar-label">
+                        <span>${h.ticker}</span>
+                        <span>${percent}%</span>
+                    </div>
+                    <div class="alloc-bar-track">
+                        <div class="alloc-bar-fill" style="width: ${percent}%; background-color: ${color};"></div>
+                    </div>
+                `;
+                holdingsContainer.appendChild(row);
+            });
+            const totalPercent = Math.round(totalWeight * 100);
+            const badge = document.getElementById('weight-total-badge');
+            badge.textContent = `${totalPercent}%`;
+            badge.style.color = (totalPercent === 100) ? 'var(--success-color)' : 'var(--danger-color)';
+            const sectorContainer = document.getElementById('sector-bar-list');
+            sectorContainer.innerHTML = '';
+            const sectors = {};
+            activeHoldings.forEach(h => {
+                const s = STATIC_SECTORS[h.ticker.toUpperCase()] || "Other";
+                sectors[s] = (sectors[s] || 0) + h.weight;
+            });
+            Object.entries(sectors).forEach(([sec, weight], idx) => {
+                const row = document.createElement('div');
+                row.className = 'alloc-bar-row';
+                const percent = Math.round(weight * 100);
+                const color = colors[(idx + 3) % colors.length];
+                row.innerHTML = `
+                    <div class="alloc-bar-label">
+                        <span>${sec}</span>
+                        <span>${percent}%</span>
+                    </div>
+                    <div class="alloc-bar-track">
+                        <div class="alloc-bar-fill" style="width: ${percent}%; background-color: ${color};"></div>
+                    </div>
+                `;
+                sectorContainer.appendChild(row);
+            });
+        }
+        function appendLog(message) {
+            const container = document.getElementById('logs-output');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            entry.innerHTML = `<span class="log-time">[${timeStr}]</span> ${message}`;
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+        function submitAgentQuery() {
+            const query = document.getElementById('query-input').value.trim();
+            if (!query) return;
+            let totalWeight = activeHoldings.reduce((sum, h) => sum + h.weight, 0);
+            if (totalWeight <= 0) {
+                alert("Please assign a non-zero weight to your portfolio holdings.");
+                return;
+            }
+            if (Math.abs(totalWeight - 1.0) > 0.001) {
+                activeHoldings = activeHoldings.map(h => ({
+                    ticker: h.ticker,
+                    weight: parseFloat((h.weight / totalWeight).toFixed(3))
+                }));
+                renderWeightInputs();
+                updateAllocationCharts();
+                appendLog("[System] Auto-normalized portfolio weights to sum to 100%.");
+            }
+            // UI loading state
+            document.getElementById('spinner').style.display = 'inline-block';
+            document.getElementById('btn-text').textContent = 'Analyzing...';
+            document.getElementById('run-btn').disabled = true;
+            appendLog(`[Stateful Agent] Launching US Equities GraphRAG analysis...`);
+            appendLog(`[User] Question: "${query}"`);
+            fetch('/api/query', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: query,
+                    portfolio: activeHoldings,
+                    session_id: "default_session"
+                })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP Error status ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                document.getElementById('insight-output').innerHTML = '';
+                const parsedHTML = marked.parse(data.insight);
+                document.getElementById('insight-output').innerHTML = parsedHTML;
+                data.logs.forEach(logLine => {
+                    appendLog(logLine);
+                });
+                appendLog(`[Stateful Agent] Analysis Succeeded! Populated Vector Index and Active Knowledge Graph.`);
+                fetchGraphData();
+            })
+            .catch(err => {
+                appendLog(`[ERROR] Portfolio execution failed: ${err.message}`);
+                document.getElementById('insight-output').innerHTML = `<p style="color: var(--danger-color); text-align: center; padding: 4rem 0;">Error occurred executing agent: ${err.message}</p>`;
+            })
+            .finally(() => {
+                document.getElementById('spinner').style.display = 'none';
+                document.getElementById('btn-text').textContent = 'Analyze';
+                document.getElementById('run-btn').disabled = false;
+            });
+        }
+        function fetchGraphData() {
+            fetch('/api/graph')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('graph-meta').textContent = `Nodes: ${data.nodes.length} | Edges: ${data.edges.length}`;
+                    renderNetwork(data.nodes, data.edges);
+                })
+                .catch(err => {
+                    appendLog(`[ERROR] Failed to fetch Knowledge Graph visual representation: ${err.message}`);
+                });
+        }
+        function resetDatabase() {
+            if (!confirm("Are you sure you want to clear the Vector Index and Neo4j Graph database and reload mock SEC filings / GDELT streams?")) {
+                return;
+            }
+            appendLog("[System] Initializing database reset and pre-seeding default holdings...");
+            fetch('/api/reset', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    appendLog(`[System] ${data.message}`);
+                    applyPreset('tech');
+                    fetchGraphData();
+                })
+                .catch(err => {
+                    appendLog(`[ERROR] Reset operation failed: ${err.message}`);
+                });
+        }
+        function submitSecFiling() {
+            const data = {
+                ticker: document.getElementById('sec-ticker').value,
+                form_type: document.getElementById('sec-form-type').value,
+                accession_no: document.getElementById('sec-accession').value,
+                filed_at: document.getElementById('sec-date').value,
+                url: document.getElementById('sec-url').value,
+                text: document.getElementById('sec-text').value
+            };
+            if(!data.ticker || !data.accession_no) return alert("Ticker and Accession No are required");
+            appendLog(`[System] Adding custom SEC Filing ${data.accession_no}...`);
+            fetch('/api/add_sec_filing', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                appendLog(`[System] ${res.message}`);
+                document.getElementById('add-sec-form').style.display='none';
+                fetchGraphData();
+            })
+            .catch(err => appendLog(`[ERROR] Failed to add SEC filing: ${err.message}`));
+        }
+        function submitEvent() {
+            const tickers = document.getElementById('ev-tickers').value.split(',').map(s=>s.trim()).filter(Boolean);
+            const data = {
+                event_id: document.getElementById('ev-id').value,
+                title: document.getElementById('ev-title').value,
+                source: document.getElementById('ev-source').value,
+                published_at: document.getElementById('ev-date').value,
+                url: document.getElementById('ev-url').value,
+                tickers: tickers
+            };
+            if(!data.event_id || !data.title) return alert("Event ID and Title are required");
+            appendLog(`[System] Adding custom GDELT Event ${data.event_id}...`);
+            fetch('/api/add_gdelt_event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                appendLog(`[System] ${res.message}`);
+                document.getElementById('add-event-form').style.display='none';
+                fetchGraphData();
+            })
+            .catch(err => appendLog(`[ERROR] Failed to add GDELT event: ${err.message}`));
+        }
+        function renderNetwork(nodesData, edgesData) {
+            const container = document.getElementById('network-visualization');
+            const formattedNodes = nodesData.map(node => {
+                let color = '#6366f1'; 
+                let shape = 'dot';
+                let size = 18;
+                if (node.label === 'Portfolio') {
+                    color = '#a855f7'; 
+                    shape = 'hexagon';
+                    size = 24;
+                } else if (node.label === 'Holding') {
+                    color = '#ec4899'; 
+                    shape = 'diamond';
+                    size = 14;
+                } else if (node.label === 'Company') {
+                    color = '#6366f1'; 
+                    shape = 'dot';
+                    size = 20;
+                } else if (node.label === 'Sector') {
+                    color = '#06b6d4'; 
+                    shape = 'square';
+                    size = 18;
+                } else if (node.label === 'Filing') {
+                    color = '#eab308'; 
+                    shape = 'star';
+                    size = 14;
+                } else if (node.label === 'Event') {
+                    color = '#f97316'; 
+                    shape = 'triangle';
+                    size = 14;
+                }
+                return {
+                    id: node.id,
+                    label: node.title,
+                    shape: shape,
+                    size: size,
+                    font: {
+                        color: '#f8fafc',
+                        face: 'Inter',
+                        size: 9,
+                        strokeWidth: 2,
+                        strokeColor: '#070913'
+                    },
+                    color: {
+                        background: color,
+                        border: 'rgba(255, 255, 255, 0.1)',
+                        highlight: {
+                            background: '#a855f7',
+                            border: '#ffffff'
+                        }
+                    },
+                    title: `Type: ${node.label}\n${node.title} ${node.subtitle ? '\nInfo: ' + node.subtitle : ''}`
+                };
+            });
+            const formattedEdges = edgesData.map(edge => {
+                return {
+                    from: edge.source,
+                    to: edge.target,
+                    label: edge.type,
+                    arrows: 'to',
+                    font: {
+                        color: 'rgba(255, 255, 255, 0.3)',
+                        size: 7,
+                        face: 'Inter',
+                        strokeWidth: 0
+                    },
+                    color: {
+                        color: 'rgba(255, 255, 255, 0.05)',
+                        highlight: '#a855f7',
+                        hover: '#6366f1'
+                    },
+                    width: 1.0
+                };
+            });
+            const data = {
+                nodes: new vis.DataSet(formattedNodes),
+                edges: new vis.DataSet(formattedEdges)
+            };
+            const options = {
+                physics: {
+                    barnesHut: {
+                        gravitationalConstant: -1200,
+                        centralGravity: 0.3,
+                        springLength: 70,
+                        springConstant: 0.04,
+                        damping: 0.09
+                    },
+                    stabilization: { iterations: 120 }
+                },
+                interaction: {
+                    hover: true,
+                    dragNodes: true,
+                    zoomView: true
+                }
+            };
+            if (visNetworkInstance) {
+                visNetworkInstance.destroy();
+            }
+            visNetworkInstance = new vis.Network(container, data, options);
+        }
+    </script>
+</body>
+</html>

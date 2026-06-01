@@ -1,0 +1,92 @@
+[
+    {
+        "event_id": "EV_NEWS_001",
+        "title": "US Imposes Additional Export Restraints on Advanced Semiconductor Tooling Targeting Semiconductor Hubs",
+        "source": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-05-22/us-chips-rules-semiconductors",
+        "published_at": "2026-05-23",
+        "tickers": [
+            "NVDA",
+            "AAPL",
+            "MSFT"
+        ]
+    },
+    {
+        "event_id": "EV_NEWS_002",
+        "title": "EU Commission Approves Landmark AI Act Compliance Audit, Pushing Sovereign Audits for Major Hyperscalers",
+        "source": "Reuters",
+        "url": "https://www.reuters.com/technology/eu-ai-act-compliance-audits-2026-05-24/",
+        "published_at": "2026-05-25",
+        "tickers": [
+            "MSFT",
+            "GOOG",
+            "AMZN"
+        ]
+    },
+    {
+        "event_id": "EV_NEWS_003",
+        "title": "Apple Unveils Generative AI Operating System Integrations at WWDC 26, Sparking Supplier Upgrades",
+        "source": "CNBC",
+        "url": "https://www.cnbc.com/2026/05/25/apple-wwdc-26-ai-partnership-chips.html",
+        "published_at": "2026-05-26",
+        "tickers": [
+            "AAPL",
+            "NVDA"
+        ]
+    },
+    {
+        "event_id": "EV_NEWS_004",
+        "title": "US Tariff Proposals on EV Battery Inputs Create Supply Shocks for Gigafactory Logistics Teams",
+        "source": "Financial Times",
+        "url": "https://www.ft.com/content/us-tariffs-ev-battery-supply-tesla-2026-05-26",
+        "published_at": "2026-05-27",
+        "tickers": [
+            "TSLA"
+        ]
+    },
+    {
+        "event_id": "EV_NEWS_005",
+        "title": "AWS Announces Multi-Billion Dollar Sovereign Cloud Facility Expansion in Frankfurt to Tackle Data Residency",
+        "source": "Wall Street Journal",
+        "url": "https://www.wsj.com/articles/amazon-aws-frankfurt-sovereign-cloud-2026-05-27",
+        "published_at": "2026-05-28",
+        "tickers": [
+            "AMZN",
+            "MSFT"
+        ]
+    },
+    {
+        "event_id": "EV_NEWS_006",
+        "title": "NVIDIA and TSMC Jointly Address CoWoS Chip Packaging Scaling Constraints at Global Semiconductor Summit",
+        "source": "Reuters",
+        "url": "https://www.reuters.com/technology/nvidia-tsmc-cowos-packaging-capacity-upgrade-2026-05-28/",
+        "published_at": "2026-05-29",
+        "tickers": [
+            "NVDA",
+            "AAPL"
+        ]
+    },
+    {
+        "event_id": "EV_NEWS_007",
+        "title": "Federal Trade Commission Extends Antitrust Review on Hyperscaler AI Strategic Partnerships and Investment Rules",
+        "source": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/ftc-hyperscale-ai-antitrust-probe-2026-05-29",
+        "published_at": "2026-05-30",
+        "tickers": [
+            "MSFT",
+            "AMZN",
+            "GOOG"
+        ]
+    },
+    {
+        "event_id": "EV_NEWS_008",
+        "title": "Google DeepMind Announces Breakthrough in Quantum Error Correction Algorithms, Accelerating Next-Gen AI Compute",
+        "source": "TechCrunch",
+        "url": "https://techcrunch.com/2026/05/30/google-deepmind-quantum-error-correction-ai",
+        "published_at": "2026-05-31",
+        "tickers": [
+            "GOOG",
+            "MSFT"
+        ]
+    }
+]
