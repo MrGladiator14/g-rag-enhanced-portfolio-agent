@@ -199,5 +199,47 @@ class QdrantVectorStore:
             logger.error(f"Failed to query Qdrant: {str(e)}.")
             return []
 
+    def scroll(
+        self,
+        collection: str,
+        filter_must: List[Dict[str, Any]],
+        limit: int = 100,
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieves points from the specified Qdrant collection based on payload matching criteria,
+        without performing similarity search.
+        """
+        try:
+            url = urljoin(self.base_url, f"/collections/{collection}/points/scroll")
+            body = {
+                "filter": {"must": filter_must},
+                "limit": limit,
+                "with_payload": True,
+                "with_vector": False,
+            }
+            resp = requests.post(url, json=body, timeout=10)
+            if resp.status_code == 200:
+                data = resp.json()
+                results = []
+                for item in data.get("result", {}).get("points", []):
+                    payload = item.get("payload", {})
+                    orig_id = payload.pop("_original_str_id", str(item.get("id")))
+                    results.append(
+                        {
+                            "id": orig_id,
+                            "payload": payload,
+                        }
+                    )
+                return results
+            else:
+                logger.error(
+                    f"Scroll failed in Qdrant: {resp.status_code}. Content: {resp.text}"
+                )
+                return []
+        except Exception as e:
+            logger.error(f"Failed to scroll Qdrant: {str(e)}.")
+            return []
+
 
 vector_db = QdrantVectorStore()
+

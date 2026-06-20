@@ -157,6 +157,29 @@ class Neo4jConnector:
             except Exception as e:
                 logger.error("Failed to write Peers to Neo4j.", extra={"error": str(e)})
 
+    def update_company_summary(self, ticker: str, summary: str) -> None:
+        """
+        Updates the summary property on a Company node in Neo4j.
+        """
+        ticker = ticker.upper()
+        if self.driver:
+            cypher = """
+            MERGE (c:Company {ticker: $ticker})
+            SET c.summary = $summary
+            """
+            try:
+                with self.driver.session() as session:
+                    session.run(cypher, {"ticker": ticker, "summary": summary})
+                logger.info(
+                    "Updated company summary in Neo4j",
+                    extra={"ticker": ticker},
+                )
+            except Exception as e:
+                logger.error(
+                    "Failed to update company summary in Neo4j.",
+                    extra={"error": str(e), "ticker": ticker},
+                )
+
     def add_gdelt_event(
         self,
         event_id: str,
@@ -212,9 +235,11 @@ class Neo4jConnector:
             OPTIONAL MATCH (c)-[:IN_SECTOR]->(s:Sector)
             OPTIONAL MATCH (c)-[:FILED]->(f:Filing)
             OPTIONAL MATCH (e:Event)-[:MENTIONS]->(c)
+            OPTIONAL MATCH (c)-[:PEER_OF]->(p:Company)
             RETURN c.ticker AS ticker, s.name AS sector, f.form_type AS filing_form, 
                    f.filed_at AS filing_date, e.title AS event_title, e.published_at AS event_date,
-                   f.accession_no AS accession_no, e.event_id AS event_id
+                   f.accession_no AS accession_no, e.event_id AS event_id,
+                   p.ticker AS peer_ticker, p.summary AS peer_summary
             LIMIT 50
             """
             try:

@@ -112,6 +112,7 @@ def synthesize_portfolio_insight(state: AgentState) -> Dict[str, Any]:
     extracted_event_ids = []
     context_str = "## Graph Neighbors & Mappings:\n"
     seen_relations = set()
+    peer_summaries = {}
     for item in graph_context:
         ticker = item["ticker"]
         sector = item["sector"]
@@ -139,6 +140,10 @@ def synthesize_portfolio_insight(state: AgentState) -> Dict[str, Any]:
                 seen_relations.add(rel3)
             if ev_id:
                 extracted_event_ids.append(f"news_{ev_id}")
+        peer_t = item.get("peer_ticker")
+        peer_sum = item.get("peer_summary")
+        if peer_t and peer_sum:
+            peer_summaries[peer_t] = peer_sum
     logs.append(
         f"Extracted {len(extracted_accessions)} SEC IDs and {len(extracted_event_ids)} Event IDs from graph."
     )
@@ -167,6 +172,10 @@ def synthesize_portfolio_insight(state: AgentState) -> Dict[str, Any]:
     for hit in news_hits:
         p = hit["payload"]
         context_str += f'- [{p["source"]} - {p["published_at"]}]: "{p["title"]}"\n'
+    if peer_summaries:
+        context_str += "\n## Peer Context:\n"
+        for peer_t, peer_sum in peer_summaries.items():
+            context_str += f"- [{peer_t}]: {peer_sum}\n"
     sector_exposures = {}
     for h in portfolio:
         ticker = h["ticker"].upper()
@@ -179,7 +188,12 @@ def synthesize_portfolio_insight(state: AgentState) -> Dict[str, Any]:
     system_prompt = (
         "You are an expert Wall Street equities research analyst and portfolio risk manager. "
         "Your task is to analyze SEC filings, GDELT news events, and active knowledge graph relationships "
-        "to produce a premium, deeply-reasoned Portfolio Intelligence Report."
+        "to produce a premium, deeply-reasoned Portfolio Intelligence Report. "
+        "Crucially, keep the report extremely concise and strictly under 350 words total. "
+        "Ensure every single analytical claim or timeline fact is grounded with a clear citation matching "
+        "the format: [Ticker SEC Form, Date] for filings, or [Source - Date] for news. "
+        "Enforce strict groundedness: Do not hallucinate facts, metrics, or relationships. Only use the provided context. "
+        "You must include the following disclaimer at the end of the report: 'Disclaimer: This report is AI-generated and does not constitute financial advice.'"
     )
     user_prompt = f"""
 Analyze our US equities portfolio and answer the user question: "{query}"
@@ -188,13 +202,17 @@ Portfolio holdings:
 Computed Sector Exposures: {exposure_str}
 Retrieved GraphRAG Context:
 {context_str}
-Produce a stunning, institutional-grade markdown report including:
+Produce a stunning, institutional-grade markdown report under 350 words total including:
 1. **Executive Summary**: Synthesized threat, asset allocation, and macro opportunity assessment.
 2. **Sector Allocation & Holding Distribution**: Explain the exposure distribution and core holdings.
 3. **Strategic Risk & Geopolitical Analysis**: Focus on competitive dynamics, supply chains (e.g. TSMC packaging limits), and sovereign regulatory changes.
 4. **SEC filings & News Timeline**: Order important filings and news events chronologically.
 5. **Portfolio Recommendations**: Actionable tactical portfolio balancing actions based on findings.
-Please ground your analysis strictly in the provided SEC and GDELT context.
+
+Constraints:
+- You MUST cite the source of any facts or assertions using the format: [Ticker SEC Form, Date] (e.g., [AAPL SEC 10-Q, 2026-05-20]) or [Source - Date] (e.g., [Reuters - 2026-05-28]).
+- Keep your entire response strictly under 350 words. Be extremely concise while maintaining institutional-grade depth.
+- Ground your analysis strictly in the provided SEC and GDELT context.
 """
     insight = ""
     if (

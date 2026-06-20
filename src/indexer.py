@@ -1,9 +1,86 @@
+from openai import OpenAI
 from .database import db
 from .vector_store import vector_db, embed_texts
 from .sqlite_store import sqlite_db
+from .config import settings
 from .logger import get_logger
 
 logger = get_logger("indexer")
+
+
+def generate_company_summary(ticker: str) -> str:
+    """
+    Queries the vector store for all sec_chunks_v1 and event_snippets_v1 related to the specific ticker,
+    and prompts OpenAI LLM to synthesize these chunks into a concise, ~100-word summary.
+    """
+    ticker = ticker.upper()
+    logger.info(f"Generating summary for {ticker}...")
+    
+    # 1. Fetch SEC filing chunks matching the ticker
+    sec_points = vector_db.scroll(
+        collection="sec_chunks_v1",
+        filter_must=[{"key": "ticker", "match": {"value": ticker}}],
+        limit=100
+    )
+    
+    # 2. Fetch GDELT event snippets matching the ticker
+    event_points = vector_db.scroll(
+        collection="event_snippets_v1",
+        filter_must=[{"key": "tickers", "match": {"value": ticker}}],
+        limit=100
+    )
+    
+    # 3. Combine text contexts
+    combined_texts = []
+    for item in sec_points:
+        p = item.get("payload", {})
+        if "text" in p:
+            combined_texts.append(f"SEC Filing ({p.get('filed_at', 'unknown')}): {p['text']}")
+    for item in event_points:
+        p = item.get("payload", {})
+        if "title" in p:
+            combined_texts.append(f"News event ({p.get('published_at', 'unknown')}): {p['title']}")
+            
+    if not combined_texts:
+        return f"{ticker} has updated financial filings and news activities recorded in the database."
+        
+    combined_context = "\n".join(combined_texts)[:30000] # Safe context limit
+    
+    system_prompt = (
+        "You are an expert Wall Street equities research analyst. "
+        "Your task is to synthesize the provided recent SEC filings and news headlines for a company "
+        "into a concise, premium, ~100-word company summary. Do not use generic statements or placeholders. "
+        "Strictly ground the summary in the provided context. Enforce strict groundedness: Do not hallucinate any information. "
+        "You must include the following disclaimer at the end of the summary: 'Disclaimer: This summary is AI-generated and does not constitute financial advice.'"
+    )
+    user_prompt = f"Generate a ~100-word summary for {ticker} based on the following filings and news events:\n\n{combined_context}"
+    
+    summary = ""
+    if (
+        settings.OPENAI_API_KEY
+        and settings.OPENAI_API_KEY.startswith("sk-")
+        and len(settings.OPENAI_API_KEY) > 20
+    ):
+        try:
+            client = OpenAI(api_key=settings.OPENAI_API_KEY)
+            resp = client.chat.completions.create(
+                model=settings.OPENAI_MODEL,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.3,
+                max_tokens=250,
+            )
+            summary = resp.choices[0].message.content.strip()
+        except Exception as e:
+            logger.error(f"OpenAI summary generation failed for {ticker}: {str(e)}")
+            
+    if not summary:
+        # Fallback summary
+        summary = f"{ticker} is an active enterprise with recently updated financial filings and news events indexed in the system, reflecting ongoing strategic developments."
+        
+    return summary
 
 
 def index_pending_items():
@@ -17,6 +94,8 @@ def index_pending_items():
         logger.info("No new items to index.")
         return
     indexed_count = 0
+    affected_tickers = set()
+
     if sec_filings:
         logger.info(f"Indexing {len(sec_filings)} new SEC filings...")
         sec_texts = []
@@ -56,6 +135,8 @@ def index_pending_items():
                 vectors = embed_texts(sec_texts)
                 vector_db.upsert_points("sec_chunks_v1", sec_ids, vectors, sec_payloads)
                 sqlite_db.mark_sec_filings_indexed(indexed_accessions)
+                for p in sec_payloads:
+                    affected_tickers.add(p["ticker"])
             except Exception as e:
                 logger.error(f"Failed to index SEC vectors: {str(e)}")
     if gdelt_events:
@@ -99,6 +180,19 @@ def index_pending_items():
                     "event_snippets_v1", event_ids, vectors, event_payloads
                 )
                 sqlite_db.mark_gdelt_events_indexed(indexed_event_ids)
+                for p in event_payloads:
+                    for t in p["tickers"]:
+                        affected_tickers.add(t.upper())
             except Exception as e:
                 logger.error(f"Failed to index event vectors: {str(e)}")
+
+    if affected_tickers:
+        logger.info(f"Generating/updating summaries for affected tickers: {list(affected_tickers)}")
+        for ticker in affected_tickers:
+            try:
+                summary = generate_company_summary(ticker)
+                db.update_company_summary(ticker, summary)
+            except Exception as e:
+                logger.error(f"Failed to generate and save company summary for {ticker}: {str(e)}")
+
     logger.info(f"Successfully indexed {indexed_count} total new items.")
