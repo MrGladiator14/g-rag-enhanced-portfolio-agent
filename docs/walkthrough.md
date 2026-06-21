@@ -138,7 +138,7 @@ Writes the portfolio into Neo4j and builds the structural graph for the session.
 | `/api/query` | POST | Triggers the LangGraph agent. |
 | `/api/graph` | GET | Returns full graph for visualization. |
 | `/api/add_sec_filing` / `/api/add_gdelt_event` | POST | Adds data → SQLite → Neo4j/Qdrant + updates summaries. |
-| `/api/reset` | POST | Wipes and regenerates everything. |
+| `/api/reset` | POST | Hashes local JSON files and incrementally ingests new entities. |
 
 ---
 
@@ -173,6 +173,22 @@ class AgentState(TypedDict):
 
 ### 4. "How did you handle observability?"
 > Langfuse integration via a `@trace_agent_step` decorator that wraps each LangGraph node as a span, falling back gracefully to structured JSON logging.
+
+---
+
+## Evaluation Suite (RAGAS)
+
+The project includes an automated evaluation suite using **RAGAS** (Retrieval Augmented Generation Assessment) integrated into standard `pytest`. It tests the agent's ability to:
+1. Route to the right documents using the ticker.
+2. Filter the vector search properly (`context_precision` and `context_recall`).
+3. Generate truthful and relevant answers (`faithfulness`, `answer_correctness`, and `answer_relevancy`).
+
+Run the suite with:
+```bash
+$env:PYTHONPATH="."
+uv run pytest tests/test_ragas.py -v -s
+```
+Results are saved locally as a Markdown table in `tests/evaluation_results.md`.
 
 ---
 

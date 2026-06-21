@@ -1,5 +1,6 @@
 import os
 import json
+import hashlib
 from typing import Optional, List
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -166,15 +167,42 @@ def _seed_from_json():
 @app.post("/api/reset")
 async def reset_agent_database():
     """
-    Clears the knowledge graph, resets vector store, regenerates fresh mock files, and re-pre-seeds.
+    Checks for changes in the local JSON files and incrementally ingests only the new entities.
     """
-    logger.info("Triggering database reset and mock file regeneration.")
+    logger.info("Triggering database update check.")
+    
+    sec_path = os.path.join(settings.DATA_DIR, "sec_filings.json")
+    news_path = os.path.join(settings.DATA_DIR, "gdelt_events.json")
+    hash_path = os.path.join(settings.DATA_DIR, ".data_hash.json")
+    
+    current_hash = hashlib.md5()
+    if os.path.exists(sec_path):
+        with open(sec_path, "rb") as f:
+            current_hash.update(f.read())
+    if os.path.exists(news_path):
+        with open(news_path, "rb") as f:
+            current_hash.update(f.read())
+            
+    current_digest = current_hash.hexdigest()
+    
+    if os.path.exists(hash_path):
+        try:
+            with open(hash_path, "r") as f:
+                saved_hash = json.load(f).get("hash")
+            if saved_hash == current_digest:
+                logger.info("No changes in data files. Skipping update.")
+                return {
+                    "status": "skipped",
+                    "message": "No changes detected in JSON files. Database update skipped."
+                }
+        except Exception:
+            pass
+
+    logger.info("Changes detected or first run. Proceeding with incremental database update.")
     try:
-        db.reset_db()
-        vector_db.reset_store()
-        generate_local_gdelt_data(str(settings.DATA_DIR))
         _seed_from_json()
         index_pending_items()
+        
         default_holdings = [
             {"ticker": "AAPL", "weight": 0.4},
             {"ticker": "NVDA", "weight": 0.4},
@@ -187,13 +215,17 @@ async def reset_agent_database():
         db.add_peers("AAPL", ["MSFT", "NVDA"])
         db.add_peers("NVDA", ["AAPL", "MSFT"])
         db.add_peers("AMZN", ["TSLA"])
+        
+        with open(hash_path, "w") as f:
+            json.dump({"hash": current_digest}, f)
+            
         return {
             "status": "success",
-            "message": "Graph database and Vector Store reset. Mock files regenerated and default holdings pre-seeded.",
+            "message": "Database incrementally updated. New entities ingested and default holdings pre-seeded.",
         }
     except Exception as e:
-        logger.error("Failed to complete database reset", extra={"error": str(e)})
-        raise HTTPException(status_code=500, detail=f"Reset operation failed: {str(e)}")
+        logger.error("Failed to complete database update", extra={"error": str(e)})
+        raise HTTPException(status_code=500, detail=f"Update operation failed: {str(e)}")
 
 
 static_path = str(settings.STATIC_DIR)

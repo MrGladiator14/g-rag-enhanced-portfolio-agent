@@ -1,236 +1,50 @@
 [
-  {
-    "ticker": "AAPL",
-    "form_type": "10-K",
-    "filed_at": "2026-02-18",
-    "accession_no": "AAPL-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000008/a10-k.htm",
-    "text": "Apple Inc. Form 10-K for the fiscal year ended December 27, 2025. Item 1A. Risk Factors. Our business, results of operations, and financial condition could be materially adversely affected by several factors. Global supply chain vulnerabilities, semiconductor supply constraints, and geopolitical friction in the Asia-Pacific region remain significant risks. Increased regulatory scrutiny on App Store pricing structures, anti-steering provisions, and antitrust actions in the EU and US pose structural headwinds. We are heavily investing in consumer-facing generative artificial intelligence, silicon optimization, and mixed-reality ecosystems. The success of our proprietary Apple Silicon chips (M-series and A-series) depends on foundry execution by TSMC. Any escalation in regional disputes in the Taiwan Strait could disrupt our ability to procure high-end chips."
-  },
-  {
-    "ticker": "MSFT",
-    "form_type": "10-K",
-    "filed_at": "2026-01-29",
-    "accession_no": "MSFT-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/789019/000156459026000012/msft-10k.htm",
-    "text": "Microsoft Corporation Form 10-K. Item 1. Business Section. Azure Cloud platform growth remains the primary engine of commercial Cloud segment performance. We continue to expand our cloud infrastructure footprint globally. We are integrating advanced GPT large language models and Azure OpenAI services across our commercial suites, Windows Copilot, and office application stack. Risk Factors: High capital expenditures are required to build and maintain next-generation data centers, GPU computing fleets, and network topology. Our strategic alliance with OpenAI is highly competitive and subjects us to technical and regulatory risk. We face intense competition from Google Cloud Platform (GCP) and Amazon Web Services (AWS) in hyperscale infrastructure. Energy grid reliability, carbon neutral commitments, and sovereign cloud data residency policies represent key compliance metrics."
-  },
-  {
-    "ticker": "NVDA",
-    "form_type": "10-Q",
-    "filed_at": "2026-03-12",
-    "accession_no": "NVDA-10Q-Q3-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000045/nvda-10q.htm",
-    "text": "NVIDIA Corporation Form 10-Q for the Quarter ended January 25, 2026. Item 2. MD&A. Our Data Center revenue hit record highs, driven by hyperscaler adoption of Hopper H200 and Blackwell B200 architectures. GPU demand continues to far outpace industry supply capability, and lead times remain extended. We are expanding our networking suite, including InfiniBand and Spectrum-X Ethernet systems, to alleviate compute bottlenecks. Supply Chain & Operations: We rely on single-source manufacturing partners, specifically TSMC for advanced silicon packaging (CoWoS) and ASML for EUV lithography tooling. Regulatory limits: Stringent export control guidelines imposed by the US Department of Commerce restrict delivery of high-bandwidth AI hardware to sovereign entities in China and parts of the Middle East, which could impact future growth trajectories."
-  },
-  {
-    "ticker": "TSLA",
-    "form_type": "10-K",
-    "filed_at": "2026-02-05",
-    "accession_no": "TSLA-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026000344/tsla-10k.htm",
-    "text": "Tesla, Inc. Form 10-K. Item 1A. Operational Risk Factors. Automotive margins experienced volatility due to global price matching adjustments, shifting consumer EV incentives in Europe, and factory retooling downtimes. We are accelerating deployment of the Next-Generation vehicle platform, Full Self-Driving (FSD) Supervised neural networks, and Optimus humanoid robotics. Supply chain dynamics: Lithium-ion battery pack manufacturing and raw material refinement (Lithium, Nickel, Cobalt) are sensitive to localized geopolitical changes and export quotas. Our Gigafactory Shanghai production facility represents our highest capacity center, exposing our operations to US-China trade tariffs and supply chain localization rules under the US Inflation Reduction Act (IRA)."
-  },
-  {
-    "ticker": "AMZN",
-    "form_type": "10-K",
-    "filed_at": "2026-02-10",
-    "accession_no": "AMZN-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000015/amzn-10k.htm",
-    "text": "Amazon.com, Inc. Form 10-K. MD&A Section. Amazon Web Services (AWS) net sales increased, driven by extensive migrations, enterprise AI integrations, and the roll-out of AWS Trainium and Inferentia proprietary AI chips. Retail Operations: Shipping costs, labor relations, and warehouse automated sorting deployments represent major cost leverage components. We are actively incorporating robotics to enhance delivery efficiency. Risk Factors: Rapid technological changes in generative AI models require persistent capital allocation. We are subject to complex antitrust reviews by the FTC regarding Prime bundled services, merchant agreements, and logistics policies. Any adverse regulatory outcomes could force business model structural adjustments."
-  },
-  {
-    "ticker": "GOOG",
-    "form_type": "10-K",
-    "filed_at": "2026-02-01",
-    "accession_no": "GOOG-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-10k.htm",
-    "text": "Alphabet Inc. Form 10-K. Our Search revenue continues to grow, although we are actively investing heavily in Google DeepMind and our Gemini AI infrastructure. Data privacy regulations in the EU (GDPR) and the ongoing DOJ antitrust lawsuit regarding our Search monopoly represent material risks to our core business model. We depend on highly optimized custom Tensor Processing Units (TPUs) for our compute workloads, reducing our dependency on external GPU suppliers but exposing us to specialized manufacturing constraints."
-  },
-
-  {
-    "ticker": "DELL",
-    "form_type": "10-K",
-    "filed_at": "2026-03-16",
-    "accession_no": "0001571996-26-000008",
-    "url": "https://investors.delltechnologies.com/sec-filings/sec-filing/10-k/0001571996-26-000008",
-    "text": "Dell Technologies Inc. Form 10-K for the fiscal year ended January 30, 2026. The company reports on its Infrastructure Solutions Group and Client Solutions Group performance, highlights demand trends for servers, storage, and commercial PCs, and discusses competitive dynamics in hybrid cloud and edge computing markets. Risk factors include supply chain disruptions, component cost volatility, and macroeconomic uncertainty affecting enterprise IT spending. The filing also outlines capital allocation priorities, including share repurchases and debt reduction initiatives." 
-  },
-  {
-    "ticker": "TWO",
-    "form_type": "10-K",
-    "filed_at": "2026-02-17",
-    "accession_no": "TWO-10K-2026",
-    "url": "https://www.twoinv.com/investors/sec-filings/annual-filings",
-    "text": "Two Harbors Investment Corp. Form 10-K filed February 17, 2026, providing an annual report pursuant to Section 13 and 15(d) of the Securities Exchange Act. The company describes its residential mortgage-backed securities, mortgage servicing rights, and other real estate-related investment strategies. Management discusses interest rate risk, prepayment risk, and funding risk as key drivers of book value volatility. The filing includes detailed disclosures on leverage, hedging strategies, and regulatory capital considerations for a mortgage REIT structure."
-  },
-  {
-    "ticker": "TWO",
-    "form_type": "10-K/A",
-    "filed_at": "2026-04-27",
-    "accession_no": "TWO-10K-A-2026",
-    "url": "https://www.twoinv.com/investors/sec-filings/annual-filings",
-    "text": "Two Harbors Investment Corp. Form 10-K/A filed April 27, 2026, amending the company’s previously filed 2025 Form 10-K. The amendment provides updated disclosures and additional exhibits, including revised risk factor language and clarifications around internal control over financial reporting. The company reiterates its focus on residential mortgage-backed securities and mortgage servicing rights while addressing certain technical comments raised during the review process."
-  },
-  {
-    "ticker": "TTEK",
-    "form_type": "10-Q",
-    "filed_at": "2026-05-01",
-    "accession_no": "TTEK-10Q-2026Q2",
-    "url": "https://investor.tetratech.com/financials/sec-filings/default.aspx",
-    "text": "Tetra Tech, Inc. Form 10-Q filed May 1, 2026, reporting quarterly results for its consulting and engineering services. The company highlights growth in water infrastructure, environmental remediation, and climate resilience projects. Management notes a strong backlog and diversified client base across federal, state, and commercial customers. Risks discussed include contract execution, labor availability, and changes in government funding priorities for infrastructure and environmental programs."
-  },
-  {
-    "ticker": "TTEK",
-    "form_type": "8-K",
-    "filed_at": "2026-04-29",
-    "accession_no": "TTEK-8K-2026-04-29",
-    "url": "https://investor.tetratech.com/financials/sec-filings/default.aspx",
-    "text": "Tetra Tech, Inc. Form 8-K filed April 29, 2026, providing a current report on a material event. The company discloses the announcement of a significant contract award related to environmental consulting services and provides preliminary commentary on expected revenue contributions. The filing also includes an exhibit with an investor presentation used in connection with a conference appearance."
-  },
-  {
-    "ticker": "TTEK",
-    "form_type": "SC 13G",
-    "filed_at": "2026-04-30",
-    "accession_no": "TTEK-SC13G-2026",
-    "url": "https://investor.tetratech.com/financials/sec-filings/default.aspx",
-    "text": "Schedule 13G filed April 30, 2026, reporting beneficial ownership of Tetra Tech, Inc. common stock by an institutional investor. The filing discloses the percentage of shares held, voting power, and dispositive power, as well as the date on which the reporting threshold was crossed. It indicates a passive investment intent as defined under SEC rules for Schedule 13G filers."
-  },
-  {
-    "ticker": "DXC",
-    "form_type": "10-K",
-    "filed_at": "2026-06-17",
-    "accession_no": "DXC-10K-2026",
-    "url": "https://investors.dxc.com/financials/sec-filings/default.aspx",
-    "text": "DXC Technology Company Form 10-K filed in June 2026, covering the fiscal year 2026. The filing describes DXC’s IT services, including cloud migration, application modernization, and IT outsourcing. Management discusses restructuring initiatives, cost reduction programs, and progress on portfolio rationalization. The company also outlines risks related to competitive pressures, talent retention, cybersecurity, and macroeconomic factors affecting client IT spending."
-  },
-  {
-    "ticker": "DXC",
-    "form_type": "10-Q",
-    "filed_at": "2026-05-15",
-    "accession_no": "DXC-10Q-2026Q1",
-    "url": "https://investors.dxc.com/financials/sec-filings/default.aspx",
-    "text": "DXC Technology Company Form 10-Q for the quarter ended March 31, 2026. The company reports segment performance, including Global Business Services and Global Infrastructure Services. Management commentary emphasizes progress on improving contract profitability and exiting underperforming engagements. Risks include client demand variability, execution risk on transformation projects, and exposure to currency fluctuations in international markets."
-  },
-  {
-    "ticker": "DXC",
-    "form_type": "8-K",
-    "filed_at": "2026-04-10",
-    "accession_no": "DXC-8K-2026-04-10",
-    "url": "https://investors.dxc.com/financials/sec-filings/default.aspx",
-    "text": "DXC Technology Company Form 8-K filed April 10, 2026, announcing a leadership change and updating investors on strategic priorities. The filing discloses the appointment of a new senior executive, summarizes changes to reporting lines, and includes a brief discussion of the company’s focus on higher-margin digital services. It also provides details regarding executive compensation arrangements associated with the appointment."
-  },
-
-  {
-    "ticker": "META",
-    "form_type": "10-K",
-    "filed_at": "2026-02-26",
-    "accession_no": "META-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/1326801/meta-10k-2026.htm",
-    "text": "Meta Platforms, Inc. Form 10-K for the year ended December 31, 2025. The company discusses user growth trends across Facebook, Instagram, WhatsApp, and Threads, along with advertising demand dynamics. It highlights investments in mixed reality devices, AI recommendation systems, and content moderation. Key risks include regulatory scrutiny over privacy and competition, changes in digital advertising markets, and challenges in monetizing newer products such as the metaverse platform."
-  },
-  {
-    "ticker": "NFLX",
-    "form_type": "10-K",
-    "filed_at": "2026-02-20",
-    "accession_no": "NFLX-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/1065280/nflx-10k-2026.htm",
-    "text": "Netflix, Inc. Form 10-K for the year ended December 31, 2025. The company reports on subscriber trends across regions, the adoption of its ad-supported tier, and content investment strategy. Management emphasizes competition from other streaming platforms and evolving consumer viewing habits. Risks include foreign exchange impacts, content production delays, and regulatory changes affecting media and entertainment markets."
-  },
-  {
-    "ticker": "INTC",
-    "form_type": "10-K",
-    "filed_at": "2026-02-28",
-    "accession_no": "INTC-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/50863/intc-10k-2026.htm",
-    "text": "Intel Corporation Form 10-K for the year ended December 28, 2025. Intel provides an update on its IDM 2.0 strategy, foundry services initiatives, and progress on advanced process technology nodes. The filing highlights competition from other semiconductor manufacturers, capital intensity of new fabs, and demand patterns in PC and data center markets. Risk factors address execution on manufacturing roadmaps, supply chain dependencies, and geopolitical considerations for global operations."
-  },
-  {
-    "ticker": "BAC",
-    "form_type": "10-K",
-    "filed_at": "2026-02-23",
-    "accession_no": "BAC-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/70858/bac-10k-2026.htm",
-    "text": "Bank of America Corporation Form 10-K for the year ended December 31, 2025. The company provides an overview of its Consumer Banking, Global Wealth & Investment Management, and Global Banking segments. Management discusses credit quality, net interest income dynamics, and regulatory capital ratios. Key risks include changes in interest rates, credit losses, regulatory compliance demands, and macroeconomic conditions affecting borrowers and markets."
-  },
-  {
-    "ticker": "JPM",
-    "form_type": "10-K",
-    "filed_at": "2026-02-24",
-    "accession_no": "JPM-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/19617/jpm-10k-2026.htm",
-    "text": "JPMorgan Chase & Co. Form 10-K for the year ended December 31, 2025. The report covers performance in Consumer & Community Banking, Corporate & Investment Bank, Commercial Banking, and Asset & Wealth Management. Management highlights risk management practices, capital and liquidity positions, and exposure to market volatility. Risk factors emphasize regulatory changes, credit and market risk, operational risk, and cybersecurity threats."
-  },
-  {
-    "ticker": "GS",
-    "form_type": "10-K",
-    "filed_at": "2026-02-27",
-    "accession_no": "GS-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/886982/gs-10k-2026.htm",
-    "text": "The Goldman Sachs Group, Inc. Form 10-K for the year ended December 31, 2025. The company outlines results across Investment Banking, Global Markets, Asset & Wealth Management, and Platform Solutions. Management discusses advisory and underwriting activity, trading revenues, and strategic focus areas. Risk factors include market risk, counterparty risk, liquidity risk, and regulatory developments affecting capital markets activities."
-  },
-  {
-    "ticker": "ORCL",
-    "form_type": "10-Q",
-    "filed_at": "2026-03-15",
-    "accession_no": "ORCL-10Q-2026Q3",
-    "url": "https://www.sec.gov/Archives/edgar/data/1341439/orcl-10q-2026.htm",
-    "text": "Oracle Corporation Form 10-Q for the quarter ended February 29, 2026. The company reports growth in its cloud applications and infrastructure businesses, including Oracle Cloud ERP and OCI. Management notes ongoing migrations from on-premise software and highlights competition from other hyperscale cloud providers. Risks include data center investment requirements, evolving data privacy regulations, and customer adoption trends for cloud services."
-  },
-  {
-    "ticker": "ADBE",
-    "form_type": "10-Q",
-    "filed_at": "2026-03-21",
-    "accession_no": "ADBE-10Q-2026Q1",
-    "url": "https://www.sec.gov/Archives/edgar/data/796343/adbe-10q-2026.htm",
-    "text": "Adobe Inc. Form 10-Q for the quarter ended March 1, 2026. Adobe reports performance across its Digital Media, Digital Experience, and Publishing segments. The filing highlights adoption of Creative Cloud and Document Cloud, as well as integrations of AI-assisted tools in creative workflows. Risks include competition from other creative software vendors, subscription retention dynamics, and macroeconomic impacts on enterprise marketing spend."
-  },
-  {
-    "ticker": "CRM",
-    "form_type": "10-K",
-    "filed_at": "2026-03-01",
-    "accession_no": "CRM-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/1108524/crm-10k-2026.htm",
-    "text": "Salesforce, Inc. Form 10-K for the year ended January 31, 2026. The company describes growth in its Customer 360 platform, including Sales Cloud, Service Cloud, and Data Cloud offerings. Management emphasizes investments in AI-driven analytics and automation across its portfolio. Key risks include competition in enterprise software, integration of acquired businesses, and reliance on a subscription-based revenue model."
-  },
-  {
-    "ticker": "PEP",
-    "form_type": "10-K",
-    "filed_at": "2026-02-19",
-    "accession_no": "PEP-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/77476/pep-10k-2026.htm",
-    "text": "PepsiCo, Inc. Form 10-K for the year ended December 31, 2025. The company provides an overview of its Frito-Lay, Quaker Foods, and beverage businesses, including revenue and margin trends by region. Management addresses brand investment, cost management initiatives, and supply chain optimization. Risk factors include commodity price volatility, shifting consumer preferences, and regulatory developments related to health, labeling, and packaging."
-  },
-  {
-    "ticker": "KO",
-    "form_type": "10-K",
-    "filed_at": "2026-02-21",
-    "accession_no": "KO-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/21344/ko-10k-2026.htm",
-    "text": "The Coca-Cola Company Form 10-K for the year ended December 31, 2025. Coca-Cola discusses performance of its sparkling soft drinks, juice, dairy, and hydration portfolios. The filing highlights marketing investments, product innovation, and refranchising of bottling operations. Risks include foreign currency fluctuations, changes in consumer tastes, regulatory restrictions on sugar-sweetened beverages, and competitive dynamics in global beverage markets."
-  },
-  {
-    "ticker": "UNH",
-    "form_type": "10-K",
-    "filed_at": "2026-02-25",
-    "accession_no": "UNH-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/731766/unh-10k-2026.htm",
-    "text": "UnitedHealth Group Incorporated Form 10-K for the year ended December 31, 2025. The company reports on its UnitedHealthcare and Optum segments, including membership trends, medical cost ratios, and care delivery initiatives. Management discusses regulatory developments in U.S. healthcare, value-based care models, and technology investments. Risks include policy changes affecting Medicare and Medicaid, medical cost trend variability, and compliance with complex healthcare regulations."
-  },
-  {
-    "ticker": "PFE",
-    "form_type": "10-K",
-    "filed_at": "2026-02-22",
-    "accession_no": "PFE-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/78003/pfe-10k-2026.htm",
-    "text": "Pfizer Inc. Form 10-K for the year ended December 31, 2025. The company outlines its portfolio of innovative medicines and vaccines, R&D pipeline progress, and collaboration agreements. Management discusses revenue trends following the pandemic period and diversification across therapeutic areas. Key risks include clinical trial outcomes, pricing pressures, patent expirations, and regulatory scrutiny over drug safety and marketing practices."
-  },
-  {
-    "ticker": "XOM",
-    "form_type": "10-K",
-    "filed_at": "2026-02-18",
-    "accession_no": "XOM-10K-2026",
-    "url": "https://www.sec.gov/Archives/edgar/data/34088/xom-10k-2026.htm",
-    "text": "Exxon Mobil Corporation Form 10-K for the year ended December 31, 2025. The company discusses upstream production, refining and chemical operations, and low-carbon solutions initiatives. Management addresses capital allocation for major projects, cost discipline, and returns to shareholders. Risks include commodity price volatility, energy transition policies, environmental regulations, and geopolitical risks affecting global operations."
-  }
+    {
+        "ticker": "AAPL",
+        "form_type": "10-K",
+        "filed_at": "2026-02-18",
+        "accession_no": "AAPL-10K-2026",
+        "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000008/a10-k.htm",
+        "text": "Apple Inc. Form 10-K for the fiscal year ended December 27, 2025. Item 1A. Risk Factors. Our business, results of operations, and financial condition could be materially adversely affected by several factors. Global supply chain vulnerabilities, semiconductor supply constraints, and geopolitical friction in the Asia-Pacific region remain significant risks. Increased regulatory scrutiny on App Store pricing structures, anti-steering provisions, and antitrust actions in the EU and US pose structural headwinds. We are heavily investing in consumer-facing generative artificial intelligence, silicon optimization, and mixed-reality ecosystems. The success of our proprietary Apple Silicon chips (M-series and A-series) depends on foundry execution by TSMC. Any escalation in regional disputes in the Taiwan Strait could disrupt our ability to procure high-end chips."
+    },
+    {
+        "ticker": "MSFT",
+        "form_type": "10-K",
+        "filed_at": "2026-01-29",
+        "accession_no": "MSFT-10K-2026",
+        "url": "https://www.sec.gov/Archives/edgar/data/789019/000156459026000012/msft-10k.htm",
+        "text": "Microsoft Corporation Form 10-K. Item 1. Business Section. Azure Cloud platform growth remains the primary engine of commercial Cloud segment performance. We continue to expand our cloud infrastructure footprint globally. We are integrating advanced GPT large language models and Azure OpenAI services across our commercial suites, Windows Copilot, and office application stack. Risk Factors: High capital expenditures are required to build and maintain next-generation data centers, GPU computing fleets, and network topology. Our strategic alliance with OpenAI is highly competitive and subjects us to technical and regulatory risk. We face intense competition from Google Cloud Platform (GCP) and Amazon Web Services (AWS) in hyperscale infrastructure. Energy grid reliability, carbon neutral commitments, and sovereign cloud data residency policies represent key compliance metrics."
+    },
+    {
+        "ticker": "NVDA",
+        "form_type": "10-Q",
+        "filed_at": "2026-03-12",
+        "accession_no": "NVDA-10Q-Q3-2026",
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000045/nvda-10q.htm",
+        "text": "NVIDIA Corporation Form 10-Q for the Quarter ended January 25, 2026. Item 2. MD&A. Our Data Center revenue hit record highs, driven by hyperscaler adoption of Hopper H200 and Blackwell B200 architectures. GPU demand continues to far outpace industry supply capability, and lead times remain extended. We are expanding our networking suite, including InfiniBand and Spectrum-X Ethernet systems, to alleviate compute bottlenecks. Supply Chain & Operations: We rely on single-source manufacturing partners, specifically TSMC for advanced silicon packaging (CoWoS) and ASML for EUV lithography tooling. Regulatory limits: Stringent export control guidelines imposed by the US Department of Commerce restrict delivery of high-bandwidth AI hardware to sovereign entities in China and parts of the Middle East, which could impact future growth trajectories."
+    },
+    {
+        "ticker": "TSLA",
+        "form_type": "10-K",
+        "filed_at": "2026-02-05",
+        "accession_no": "TSLA-10K-2026",
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026000344/tsla-10k.htm",
+        "text": "Tesla, Inc. Form 10-K. Item 1A. Operational Risk Factors. Automotive margins experienced volatility due to global price matching adjustments, shifting consumer EV incentives in Europe, and factory retooling downtimes. We are accelerating deployment of the Next-Generation vehicle platform, Full Self-Driving (FSD) Supervised neural networks, and Optimus humanoid robotics. Supply chain dynamics: Lithium-ion battery pack manufacturing and raw material refinement (Lithium, Nickel, Cobalt) are sensitive to localized geopolitical changes and export quotas. Our Gigafactory Shanghai production facility represents our highest capacity center, exposing our operations to US-China trade tariffs and supply chain localization rules under the US Inflation Reduction Act (IRA)."
+    },
+    {
+        "ticker": "AMZN",
+        "form_type": "10-K",
+        "filed_at": "2026-02-10",
+        "accession_no": "AMZN-10K-2026",
+        "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000015/amzn-10k.htm",
+        "text": "Amazon.com, Inc. Form 10-K. MD&A Section. Amazon Web Services (AWS) net sales increased, driven by extensive migrations, enterprise AI integrations, and the roll-out of AWS Trainium and Inferentia proprietary AI chips. Retail Operations: Shipping costs, labor relations, and warehouse automated sorting deployments represent major cost leverage components. We are actively incorporating robotics to enhance delivery efficiency. Risk Factors: Rapid technological changes in generative AI models require persistent capital allocation. We are subject to complex antitrust reviews by the FTC regarding Prime bundled services, merchant agreements, and logistics policies. Any adverse regulatory outcomes could force business model structural adjustments."
+    },
+    {
+        "ticker": "GOOG",
+        "form_type": "10-K",
+        "filed_at": "2026-02-01",
+        "accession_no": "GOOG-10K-2026",
+        "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-10k.htm",
+        "text": "Alphabet Inc. Form 10-K. Our Search revenue continues to grow, although we are actively investing heavily in Google DeepMind and our Gemini AI infrastructure. Data privacy regulations in the EU (GDPR) and the ongoing DOJ antitrust lawsuit regarding our Search monopoly represent material risks to our core business model. We depend on highly optimized custom Tensor Processing Units (TPUs) for our compute workloads, reducing our dependency on external GPU suppliers but exposing us to specialized manufacturing constraints."
+    }
 ]

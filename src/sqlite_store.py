@@ -152,5 +152,16 @@ class SQLiteStore:
         except Exception as e:
             logger.error(f"Failed to mark GDELT events as indexed: {e}")
 
+    def clear_all(self):
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM sec_filings")
+                cursor.execute("DELETE FROM gdelt_events")
+                conn.commit()
+                logger.info("Cleared all records from SQLite local_data.db.")
+        except Exception as e:
+            logger.error(f"Failed to clear SQLite database: {e}")
+
 
 sqlite_db = SQLiteStore()

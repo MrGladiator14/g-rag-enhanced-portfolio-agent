@@ -16,21 +16,21 @@ def generate_company_summary(ticker: str) -> str:
     ticker = ticker.upper()
     logger.info(f"Generating summary for {ticker}...")
     
-    # 1. Fetch SEC filing chunks matching the ticker
+
     sec_points = vector_db.scroll(
         collection="sec_chunks_v1",
         filter_must=[{"key": "ticker", "match": {"value": ticker}}],
         limit=100
     )
     
-    # 2. Fetch GDELT event snippets matching the ticker
+
     event_points = vector_db.scroll(
         collection="event_snippets_v1",
         filter_must=[{"key": "tickers", "match": {"value": ticker}}],
         limit=100
     )
     
-    # 3. Combine text contexts
+
     combined_texts = []
     for item in sec_points:
         p = item.get("payload", {})
@@ -77,7 +77,7 @@ def generate_company_summary(ticker: str) -> str:
             logger.error(f"OpenAI summary generation failed for {ticker}: {str(e)}")
             
     if not summary:
-        # Fallback summary
+
         summary = f"{ticker} is an active enterprise with recently updated financial filings and news events indexed in the system, reflecting ongoing strategic developments."
         
     return summary

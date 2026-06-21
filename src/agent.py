@@ -240,7 +240,17 @@ Constraints:
             insight = "Error generating report with OpenAI: " + str(e)
     if not insight:
         insight = "OpenAI API Key is missing or invalid. Please check your .env file."
-    return {"insight": insight, "logs": logs}
+    
+    # Store retrieved contexts for evaluation purposes
+    vector_context = []
+    for hit in sec_hits:
+        p = hit["payload"]
+        vector_context.append(f'[{p["ticker"]} SEC {p["form_type"]} filing dated {p["filed_at"]}]: "{p["text"]}"')
+    for hit in news_hits:
+        p = hit["payload"]
+        vector_context.append(f'[{p["source"]} - {p["published_at"]}]: "{p["title"]}"')
+        
+    return {"insight": insight, "logs": logs, "vector_context": [{"text": t} for t in vector_context]}
 
 
 workflow = StateGraph(AgentState)
